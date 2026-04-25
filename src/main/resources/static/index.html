@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="code-section">
+      <h2>Hinglish Interpreter 🔥</h2>
+      
+      <textarea 
+        id="code" 
+        rows="10" 
+        cols="60" 
+        placeholder="Enter your Hinglish code here...&#10;"
+      ></textarea>
+    </div>
+    
+    <div class="controls">
+      <button onclick="run()">Run Code</button>
+    </div>
+    
+    <div class="output-section">
+      <pre id="out">Output will appear here...</pre>
+    </div>
+  </div>
+
+  <script>
+    function run() {
+      const textarea = document.getElementById("code");
+      const cursorPos = textarea.selectionStart;
+      
+      // Add loading state
+      document.querySelector('button').classList.add('running');
+      
+      fetch("/", {
+        method: "POST",
+        headers: {"Content-Type": "text/plain"},
+        body: textarea.value
+      })
+      .then(r => r.text())
+      .then(t => {
+        document.getElementById("out").innerText = t;
+        document.querySelector('button').classList.remove('running');
+        
+        // PERFECT CURSOR RESTORE
+        setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(cursorPos, cursorPos);
+        }, 50);
+      })
+      .catch(err => {
+        document.getElementById("out").innerText = "Error: " + err;
+        document.querySelector('button').classList.remove('running');
+      });
+    }
+
+    // FIX: Cursor starts at beginning on load
+    window.addEventListener('load', function() {
+      const textarea = document.getElementById("code");
+      textarea.setSelectionRange(0, 0);
+      textarea.focus();
+    });
+  </script>
+</body>
+</html>
+
