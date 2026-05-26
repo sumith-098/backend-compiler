@@ -47,6 +47,11 @@ public class InterpreterController {
     // Active sessions: id → blocking queue that holds the user's typed value
     private static final Map<String, BlockingQueue<String>> sessions = new ConcurrentHashMap<>();
 
+    @GetMapping("/initialize")
+    public String hello(){
+        return "Backend Initialized";
+    }
+    
     /* ── Start interactive run ── */
     @GetMapping(value = "/run-interactive", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter runInteractive(@RequestParam String code) {
